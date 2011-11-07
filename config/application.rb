@@ -4,7 +4,7 @@ require File.expand_path('../boot', __FILE__)
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
-require "rails/test_unit/railtie"
+#require "rails/test_unit/railtie"
 require "sprockets/railtie" # Uncomment this line for Rails 3.1+
 
 if defined?(Bundler)
@@ -49,5 +49,11 @@ module BigworldProto
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+    
+    config.generators do |g|
+      g.test_framework :rspec
+    end
+    
+    
   end
 end
