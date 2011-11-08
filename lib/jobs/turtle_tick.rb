@@ -15,6 +15,6 @@ end
 
 job 'turtle.tick' do |args|
   turtle = Turtle.find args["turtle_id"]
-  turtle.tick
+  turtle.do_tick
   tick_complete_stalk.put(turtle.id)
 end
