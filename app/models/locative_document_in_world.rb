@@ -1,5 +1,6 @@
 module LocativeDocumentInWorld
   extend ActiveSupport::Concern
+  
   included do
     belongs_to :world, index: true
 
@@ -9,7 +10,7 @@ module LocativeDocumentInWorld
 
     index :_x
     index :_y
-    spacial_index :location
+    index [[:location, Mongo::GEO2D], [:world_id, 1]],  {:min => 0, :max => 2000, :bits => 32} 
 
     validates_presence_of :world
     validates_presence_of :_x
@@ -49,5 +50,18 @@ module LocativeDocumentInWorld
       errors.add(:_x, "must be less than world width") unless (_x < world.width)
       errors.add(:_y, "must be less than world height") unless (_y < world.height)
     end
+    
+    def turtles_in_radius(radius)
+      Turtle.where(:world_id => world.id, :_id.ne => self.id).geo_near([x, y], :max_distance => radius)
+    end
+    
+    def turtles_of_species_in_radius(species, radius)
+      Turtle.excludes(:_id => self.id).where(:world_id => world.id, :_type => species).geo_near([x, y], :max_distance => radius)
+    end
+    
+    def patches_in_radius(radius)
+      Patch.where(:world_id => world.id, :_id.ne => self.id).geo_near([x, y], :max_distance => radius)
+    end
+    
   end
 end
