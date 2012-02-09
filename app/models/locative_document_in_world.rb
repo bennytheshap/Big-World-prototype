@@ -11,6 +11,8 @@ module LocativeDocumentInWorld
     index :_x
     index :_y
     index [[:location, Mongo::GEO2D], [:world_id, 1]],  {:min => 0, :max => 2000, :bits => 32} 
+    
+    shard_key :world, :_x, :_y
 
     validates_presence_of :world
     validates_presence_of :_x
@@ -61,6 +63,29 @@ module LocativeDocumentInWorld
     
     def patches_in_radius(radius)
       Patch.where(:world_id => world.id, :_id.ne => self.id).geo_near([x, y], :max_distance => radius)
+    end
+    
+    
+    def save_with_reshard
+      if _x_changed? or _y_changed?
+        new_turtle = self.clone
+        new_turtle._id = self.id
+        self.destroy
+        new_turtle.save
+      else
+        save
+      end
+    end
+
+    def save_with_reshard!
+      if _x_changed? or _y_changed?
+        new_turtle = self.clone
+        new_turtle._id = self.id
+        self.destroy
+        new_turtle.save!
+      else
+        save!
+      end
     end
     
   end

@@ -5,7 +5,7 @@ w.save!
 
 w.initialize_patches
 
-80.times do 
+5000.times do 
   t = SpacerTurtle.new
   t.world = w
   t.x = rand(w.width)

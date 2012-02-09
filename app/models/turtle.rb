@@ -32,11 +32,13 @@ class Turtle
   
   def do_tick
     tick
-    save!
+    save_with_reshard!
   end
   
   def self.degrees_to_radians(degrees)
     (degrees/180.0)*Math::PI
   end
+
+
   
 end
